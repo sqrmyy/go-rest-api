@@ -1,7 +1,7 @@
 package database
 
 import (
-	"go-rest-api/domain"
+	"github.com/Le0tk0k/go-rest-api/domain"
 )
 
 type UserRepository struct {

@@ -1,6 +1,6 @@
 package usecase
 
-import "go-rest-api/domain"
+import "github.com/Le0tk0k/go-rest-api/domain"
 
 type UserInteractor struct {
 	UserRepository UserRepository
