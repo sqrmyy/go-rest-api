@@ -1,0 +1,27 @@
+package infrastructure
+
+import (
+	"go-rest-api/interfaces/controllers"
+
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+)
+
+func Init() {
+	e := echo.New()
+
+	userController := controllers.NewUserController(NewMySqlDb())
+
+	// アクセスログのようなリクエスト単位のログを出力する
+	e.Use(middleware.Logger())
+	// アプリケーションのどこかで予期せずにpanicを起こしてしまっても、サーバは落とさずにエラーレスポンスを返せるようにリカバリーする
+	e.Use(middleware.Recover())
+
+	e.GET("/users", func(c echo.Context) error { return userController.GetUsers(c) })
+	e.GET("/users/:id", func(c echo.Context) error { return userController.GetUser(c) })
+	e.POST("/users", func(c echo.Context) error { return userController.CreateUser(c) })
+	e.PUT("/users/:id", func(c echo.Context) error { return userController.UpdateUser(c) })
+	e.DELETE("/users/:id", func(c echo.Context) error { return userController.DeleteUser(c) })
+
+	e.Logger.Fatal(e.Start(":8080"))
+}

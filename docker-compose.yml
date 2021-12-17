@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    build:
+      # Dockerfileのあるディレクトリのパスを指定
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    platform: linux/x86_64
+    ports:
+      # 公開ポートを指定
+      - '3306:3306'
+    volumes:
+      # 起動時にデータの初期化を行う
+      - ./docker/mysql/db:/docker-entrypoint-initdb.d
+      # mysqlの永続化
+      - ./docker/mysql/db/mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: go_rest_api
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    volumes:
+      - ./:/go/src/go-rest-api
+    ports:
+      - '8080:8080'
+    depends_on:
+      # dbが先に起動する
+      - db
